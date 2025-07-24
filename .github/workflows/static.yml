@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>化粧品工場 製造支援キオスク</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* スクロールバーのスタイル */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .main-grid-button {
+            transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+        }
+        .main-grid-button:active {
+            transform: scale(0.97);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- ヘッダー -->
+        <header class="bg-white shadow-md w-full p-4 flex justify-between items-center">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-700">化粧品工場 製造支援キオスク</h1>
+            <div id="clock" class="text-xl md:text-2xl font-semibold text-gray-600"></div>
+        </header>
+
+        <!-- メインコンテンツ -->
+        <main class="flex-grow p-4 md:p-8">
+            <!-- ホーム画面（メニュー） -->
+            <div id="home-view">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+                    <!-- 生産計画 -->
+                    <div onclick="showView('plan-view')" class="main-grid-button bg-white p-4 md:p-6 rounded-xl shadow-lg cursor-pointer flex flex-col items-center justify-center text-center aspect-square hover:bg-blue-50">
+                        <svg class="w-12 h-12 md:w-16 md:h-16 text-blue-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <h2 class="text-lg md:text-xl font-bold">本日の生産計画</h2>
+                    </div>
+                    <!-- 作業手順書 -->
+                    <div onclick="showView('sop-view')" class="main-grid-button bg-white p-4 md:p-6 rounded-xl shadow-lg cursor-pointer flex flex-col items-center justify-center text-center aspect-square hover:bg-green-50">
+                        <svg class="w-12 h-12 md:w-16 md:h-16 text-green-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                        <h2 class="text-lg md:text-xl font-bold">標準作業手順書</h2>
+                    </div>
+                    <!-- 品質チェック -->
+                    <div onclick="showView('qc-view')" class="main-grid-button bg-white p-4 md:p-6 rounded-xl shadow-lg cursor-pointer flex flex-col items-center justify-center text-center aspect-square hover:bg-yellow-50">
+                        <svg class="w-12 h-12 md:w-16 md:h-16 text-yellow-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <h2 class="text-lg md:text-xl font-bold">品質チェックリスト</h2>
+                    </div>
+                    <!-- トラブル対応 -->
+                    <div onclick="showView('trouble-view')" class="main-grid-button bg-white p-4 md:p-6 rounded-xl shadow-lg cursor-pointer flex flex-col items-center justify-center text-center aspect-square hover:bg-red-50">
+                        <svg class="w-12 h-12 md:w-16 md:h-16 text-red-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <h2 class="text-lg md:text-xl font-bold">トラブルシューティング</h2>
+                    </div>
+                    <!-- 安全情報 -->
+                    <div onclick="showView('safety-view')" class="main-grid-button bg-white p-4 md:p-6 rounded-xl shadow-lg cursor-pointer flex flex-col items-center justify-center text-center aspect-square hover:bg-purple-50">
+                        <svg class="w-12 h-12 md:w-16 md:h-16 text-purple-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        <h2 class="text-lg md:text-xl font-bold">安全情報</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 各画面 -->
+            <div id="plan-view" class="hidden"></div>
+            <div id="sop-view" class="hidden"></div>
+            <div id="qc-view" class="hidden"></div>
+            <div id="trouble-view" class="hidden"></div>
+            <div id="safety-view" class="hidden"></div>
+
+        </main>
+    </div>
+
+    <!-- モーダル -->
+    <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
+        <div id="modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h3 id="modal-title" class="text-2xl font-bold"></h3>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-red-600 p-2 rounded-full">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div id="modal-body" class="p-6 overflow-y-auto custom-scrollbar flex-grow">
+                <!-- モーダルの内容がここに入る -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // --- データ定義 ---
+        // 本来はサーバーやデータベースから取得します
+        const productionPlan = [
+            { product: '潤いリッチ化粧水', lot: 'A-101', quantity: 5000, line: '第1ライン' },
+            { product: '透明美肌セラム', lot: 'B-203', quantity: 3000, line: '第2ライン' },
+            { product: 'エイジングケアクリーム', lot: 'C-055', quantity: 2500, line: '第1ライン' },
+            { product: '薬用クレンジングオイル', lot: 'D-310', quantity: 4000, line: '第3ライン' },
+        ];
+
+        const sopData = {
+            '潤いリッチ化粧水': [
+                { step: 1, title: '原料秤量', content: '指定された原料をデジタル秤で正確に秤量する。誤差は±0.1%以内。' },
+                { step: 2, title: '混合・攪拌', content: 'A液とB液を混合タンクに投入し、30分間、500rpmで攪拌する。' },
+                { step: 3, title: '加熱・冷却', content: 'タンクを80℃まで加熱し15分維持。その後、冷却水で30℃まで冷却する。' },
+                { step: 4, title: '充填・キャッピング', content: '自動充填機で1本あたり150ml充填し、キャップを締める。トルク値は2.5N・m。' },
+                { step: 5, title: '検品・箱詰め', content: '液漏れ、ラベルのズレ、異物混入がないか目視で確認し、指定の化粧箱に詰める。' },
+            ],
+            '透明美肌セラム': [
+                { step: 1, title: '原料準備', content: 'クリーンベンチ内で指定原料を開封し、準備する。' },
+                { step: 2, title: '溶解', content: '精製水に粉末原料を投入し、プロペラ攪拌機で完全に溶解させる。' },
+                { step: 3, title: 'ろ過', content: '0.2μmのメンブレンフィルターで溶液をろ過し、異物を除去する。' },
+                { step: 4, title: '充填', content: 'エアシャワーを通過後、クリーンルーム内の充填機で30mlずつ充填する。' },
+                { step: 5, title: '最終検品', content: 'ブラックライト下で異物混入がないか最終確認を行う。' },
+            ],
+            'エイジングケアクリーム': [
+                 { step: 1, title: '油相・水相の準備', content: 'それぞれ別のタンクで油相成分と水相成分を計量し、75℃に加熱する。' },
+                 { step: 2, title: '乳化', content: 'ホモミキサーを使用し、水相に油相を加えながら3000rpmで10分間乳化させる。' },
+                 { step: 3, title: '冷却', content: 'パドルミキサーでゆっくり攪拌しながら、クリームを35℃まで冷却する。' },
+                 { step: 4, title: '充填', content: 'ジャー容器に50gずつ充填。容器の口にクリームが付着しないよう注意。' },
+            ]
+        };
+        
+        const qcData = {
+            '潤いリッチ化粧水': [
+                { id: 'qc1-1', text: '原料のロット番号と使用期限は正しいか？' },
+                { id: 'qc1-2', text: '攪拌時間と回転数は規定通りか？' },
+                { id: 'qc1-3', text: '加熱・冷却温度は記録されているか？' },
+                { id: 'qc1-4', text: '充填量にばらつきはないか？ (5本抜き取り検査)' },
+                { id: 'qc1-5', text: 'キャップの締まり具合は適切か？' },
+            ],
+            '透明美肌セラム': [
+                { id: 'qc2-1', text: 'クリーンベンチ内の清掃は実施済みか？' },
+                { id: 'qc2-2', text: '溶液は完全に透明で、沈殿物はないか？' },
+                { id: 'qc2-3', text: 'フィルターに破損はないか？' },
+                { id: 'qc2-4', text: 'クリーンルームの差圧は正常値か？' },
+            ],
+        };
+
+        const troubleshootingData = [
+            {
+                problem: '充填機が停止した',
+                solution: '1. 非常停止ボタンが押されていないか確認。\n2. ボトルの供給が止まっていないか確認。\n3. エアー圧が低下していないか確認。\n4. 解決しない場合は、保全担当（内線: 123）に連絡。'
+            },
+            {
+                problem: 'ラベルがズレる',
+                solution: '1. ラベルロールの取り付け位置を確認。\n2. センサーの汚れを清掃。\n3. ボトル搬送コンベアの速度とラベラーの同期を調整。\n4. 調整方法は、マニュアルNo. M-05のP.12を参照。'
+            },
+            {
+                problem: 'クリームがダマになる',
+                solution: '1. 乳化時の温度が規定通りだったか確認。\n2. ホモミキサーの回転数と時間を確認。\n3. 原料投入の順序が間違っていないか確認。\n4. 上記に問題がなければ、一度生産を停止し、品質管理部に報告。'
+            }
+        ];
+        
+        const safetyData = [
+            {
+                name: 'エタノール',
+                sds_url: '#', // 本来はPDFへのリンク
+                emergency: '火気厳禁。換気を十分に行うこと。目に入った場合は直ちに15分以上洗浄し、医師の診断を受ける。'
+            },
+            {
+                name: 'グリセリン',
+                sds_url: '#',
+                emergency: '特に大きな危険性はないが、多量に吸入・摂取した場合は医師に相談。'
+            },
+            {
+                name: '水酸化カリウム',
+                sds_url: '#',
+                emergency: '強アルカリ性。保護メガネ、ゴム手袋を必ず着用。皮膚に付着した場合は大量の水で洗い流し、医師の診断を受ける。'
+            }
+        ];
+
+        // --- 画面描画ロジック ---
+        function createBackButton() {
+            return `<button onclick="showView('home-view')" class="bg-gray-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-600 transition-colors mb-6 text-lg">ホームに戻る</button>`;
+        }
+
+        function renderPlanView() {
+            const view = document.getElementById('plan-view');
+            let html = `${createBackButton()}<h2 class="text-3xl font-bold mb-6">本日の生産計画</h2>`;
+            html += `<div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <table class="w-full text-left text-lg">
+                            <thead class="bg-gray-200">
+                                <tr>
+                                    <th class="p-4">製品名</th>
+                                    <th class="p-4">ロット番号</th>
+                                    <th class="p-4">生産数量</th>
+                                    <th class="p-4">担当ライン</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+            productionPlan.forEach((item, index) => {
+                html += `<tr class="border-b ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}">
+                            <td class="p-4 font-semibold">${item.product}</td>
+                            <td class="p-4">${item.lot}</td>
+                            <td class="p-4">${item.quantity.toLocaleString()}</td>
+                            <td class="p-4">${item.line}</td>
+                         </tr>`;
+            });
+            html += `</tbody></table></div>`;
+            view.innerHTML = html;
+        }
+        
+        function renderSopView() {
+            const view = document.getElementById('sop-view');
+            let html = `${createBackButton()}<h2 class="text-3xl font-bold mb-6">標準作業手順書 (SOP)</h2>`;
+            html += `<p class="text-xl mb-6">手順を確認したい製品を選択してください。</p>`;
+            html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">`;
+            Object.keys(sopData).forEach(product => {
+                html += `<button onclick="openSopModal('${product}')" class="bg-white text-green-700 font-bold p-6 rounded-lg shadow hover:bg-green-100 transition-colors text-xl">${product}</button>`;
+            });
+            html += `</div>`;
+            view.innerHTML = html;
+        }
+
+        function renderQcView() {
+            const view = document.getElementById('qc-view');
+            let html = `${createBackButton()}<h2 class="text-3xl font-bold mb-6">品質チェックリスト</h2>`;
+            html += `<p class="text-xl mb-6">チェックリストを開始する製品を選択してください。</p>`;
+            html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">`;
+            Object.keys(qcData).forEach(product => {
+                html += `<button onclick="openQcModal('${product}')" class="bg-white text-yellow-700 font-bold p-6 rounded-lg shadow hover:bg-yellow-100 transition-colors text-xl">${product}</button>`;
+            });
+            html += `</div>`;
+            view.innerHTML = html;
+        }
+
+        function renderTroubleView() {
+            const view = document.getElementById('trouble-view');
+            let html = `${createBackButton()}<h2 class="text-3xl font-bold mb-6">トラブルシューティング</h2>`;
+            html += `<div class="space-y-4">`;
+            troubleshootingData.forEach(item => {
+                html += `<div class="bg-white rounded-lg shadow p-6">
+                            <h3 class="text-2xl font-bold text-red-600 mb-3">${item.problem}</h3>
+                            <p class="text-lg whitespace-pre-line">${item.solution}</p>
+                         </div>`;
+            });
+            html += `</div>`;
+            view.innerHTML = html;
+        }
+        
+        function renderSafetyView() {
+            const view = document.getElementById('safety-view');
+            let html = `${createBackButton()}<h2 class="text-3xl font-bold mb-6">安全情報</h2>`;
+            html += `<div class="space-y-4">`;
+            safetyData.forEach(item => {
+                html += `<div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-2xl font-bold text-purple-700">${item.name}</h3>
+                                <a href="${item.sds_url}" target="_blank" class="bg-purple-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-purple-600">SDSを開く</a>
+                            </div>
+                            <p class="text-lg mt-3 text-red-700 font-semibold">緊急時対応: ${item.emergency}</p>
+                         </div>`;
+            });
+            html += `<div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-6 rounded-lg shadow mt-8">
+                        <h3 class="text-2xl font-bold">緊急連絡先</h3>
+                        <p class="text-xl mt-2">工場内緊急事態発生時: <strong>内線 119</strong></p>
+                        <p class="text-xl">品質管理部: <strong>内線 250</strong></p>
+                        <p class="text-xl">設備保全部: <strong>内線 123</strong></p>
+                     </div>`;
+            html += `</div>`;
+            view.innerHTML = html;
+        }
+
+        // --- モーダルロジック ---
+        function openSopModal(productName) {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+            
+            modalTitle.innerText = `${productName} - 作業手順書`;
+            
+            let bodyHtml = '<div class="space-y-5">';
+            sopData[productName].forEach(item => {
+                bodyHtml += `<div class="p-4 border rounded-lg bg-gray-50">
+                                <h4 class="text-xl font-bold text-green-700">ステップ ${item.step}: ${item.title}</h4>
+                                <p class="text-lg mt-2">${item.content}</p>
+                             </div>`;
+            });
+            bodyHtml += '</div>';
+            modalBody.innerHTML = bodyHtml;
+            
+            modal.classList.remove('hidden');
+        }
+        
+        function openQcModal(productName) {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+            
+            modalTitle.innerText = `${productName} - 品質チェックリスト`;
+            
+            let bodyHtml = `<div class="space-y-4 text-xl">`;
+            qcData[productName].forEach(item => {
+                bodyHtml += `<label for="${item.id}" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer">
+                                <input type="checkbox" id="${item.id}" class="h-6 w-6 rounded border-gray-300 text-yellow-500 focus:ring-yellow-500 mr-4">
+                                <span>${item.text}</span>
+                             </label>`;
+            });
+            bodyHtml += `</div>
+                         <div class="mt-8 text-center">
+                            <button onclick="closeModal()" class="bg-yellow-500 text-white font-bold py-3 px-8 rounded-lg hover:bg-yellow-600 transition-colors text-xl">完了</button>
+                         </div>`;
+            modalBody.innerHTML = bodyHtml;
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+            document.getElementById('modal-body').innerHTML = '';
+        }
+
+        // --- 画面切り替え ---
+        const views = ['home-view', 'plan-view', 'sop-view', 'qc-view', 'trouble-view', 'safety-view'];
+        function showView(viewId) {
+            views.forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(viewId).classList.remove('hidden');
+            
+            // 画面が切り替わったら初期化
+            if (viewId === 'plan-view') renderPlanView();
+            if (viewId === 'sop-view') renderSopView();
+            if (viewId === 'qc-view') renderQcView();
+            if (viewId === 'trouble-view') renderTroubleView();
+            if (viewId === 'safety-view') renderSafetyView();
+        }
+
+        // --- 時計機能 ---
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        // --- 初期化 ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updateClock();
+            setInterval(updateClock, 1000);
+            
+            // モーダルの外側をクリックしても閉じる
+            document.getElementById('modal').addEventListener('click', (event) => {
+                if (event.target.id === 'modal') {
+                    closeModal();
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
