@@ -11,7 +11,7 @@
             font-family: 'Noto Sans JP', 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
-        /* スクロールバーのスタイル */  
+        /* スクロールバーのスタイル */   
         .custom-scrollbar::-webkit-scrollbar {
             width: 8px;
         }
